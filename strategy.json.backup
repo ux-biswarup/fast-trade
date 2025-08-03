@@ -3,8 +3,8 @@
         "any_exit": [],
         "freq": "5Min",
         "comission": 0.01,
-        "symbol": "BTCUSD",
-        "exchange": "delta",
+        "symbol": "BTCUSDT",
+        "exchange": "binanceus",
         "datapoints": [
           {
             "args": [

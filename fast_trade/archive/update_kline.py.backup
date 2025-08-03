@@ -3,10 +3,11 @@ import typing
 
 import pandas as pd
 
-from .delta_api import get_delta_klines
+from .binance_api import get_binance_klines
+from .coinbase_api import get_product_candles
 from .db_helpers import update_klines_to_db
 
-supported_exchanges = ["delta"]
+supported_exchanges = ["binanceus", "binancecom", "coinbase"]
 
 
 def update_kline(
@@ -14,10 +15,9 @@ def update_kline(
     exchange,
     start_date: typing.Optional[datetime.datetime] = None,
     end_date: typing.Optional[datetime.datetime] = None,
-    resolution: str = "1m",
 ):
     if exchange not in supported_exchanges:
-        raise ValueError(f"Exchange {exchange} not supported. Supported: {supported_exchanges}")
+        raise ValueError(f"Exchange {exchange} not supported")
 
     if start_date is None:
         # 30 days ago
@@ -53,14 +53,27 @@ def update_kline(
         # update the db
         print(msg)
 
-    if exchange == "delta":
-        klines, status_obj = get_delta_klines(
+    if exchange == "binanceus":
+        klines, status_obj = get_binance_klines(
             symbol,
             curr_date,
             end_date,
-            resolution,
+            "us",
             status_update,
             store_func=update_klines_to_db,
+        )
+    elif exchange == "binancecom":
+        klines, status_obj = get_binance_klines(
+            symbol,
+            curr_date,
+            end_date,
+            "com",
+            status_update,
+            store_func=update_klines_to_db,
+        )
+    elif exchange == "coinbase":
+        klines, status_obj = get_product_candles(
+            symbol, curr_date, end_date, status_update, store_func=update_klines_to_db
         )
     else:
         raise ValueError(f"Exchange {exchange} not supported")
@@ -71,8 +84,10 @@ def update_kline(
 
 
 if __name__ == "__main__":
-    symbol = "BTCUSD"
-    exchange = "delta"
+    # symbol = "BTCUSDT"
+    # exchange = "binanceus"
+    symbol = "BTC-USD"
+    exchange = "coinbase"
     start_date = datetime.datetime(2024, 1, 1)
     end_date = datetime.datetime(2024, 1, 14)
     res = update_kline(symbol, exchange, start_date, end_date)

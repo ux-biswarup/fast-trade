@@ -31,10 +31,10 @@ download_parser = sub_parsers.add_parser("download", help="download data")
 download_parser.add_argument("symbol", help="symbol to download", type=str)
 download_parser.add_argument(
     "exchange",
-    help="Which exchange to download data from. Defaults to delta",
+    help="Which exchange to download data from. Defaults to binance.com",
     type=str,
-    default="delta",
-    choices=["delta"],
+    default="binanceus",
+    choices=["binancecom", "binanceus", "coinbase"],
 )
 download_parser.add_argument(
     "--start",
@@ -93,7 +93,7 @@ get_assets_parser.add_argument(
     help="",
     type=str,
     default="local",
-    choices=["local", "delta"],
+    choices=["local", "binanceus", "binancecom", "coinbase"],
 )
 
 update_archive_parser = sub_parsers.add_parser(
